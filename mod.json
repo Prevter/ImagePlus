@@ -1,0 +1,37 @@
+{
+    "geode": "4.7.1",
+    "gd": {
+        "win": "2.2074",
+        "android": "2.2074",
+        "mac": "2.2074",
+        "ios": "2.2074"
+    },
+    "id": "prevter.imageplus",
+    "name": "ImagePlus",
+    "version": "v1.0.0",
+    "developer": "prevter",
+    "description": "API mod that adds more image formats",
+    "early-load": true,
+    "tags": [
+        "developer",
+        "utility",
+        "enhancement",
+        "api"
+    ],
+    "api": {
+        "include": [
+            "include/*.hpp"
+        ]
+    },
+    "links": {
+        "source": "https://github.com/prevter/imageplus"
+    },
+    "settings": {
+        "force-autodetect": {
+            "type": "bool",
+            "name": "Force Format Autodetect",
+            "description": "Ignores the requested image format and always tries to autodetect it from the file.  \nAllows to use different image formats in texture packs and more.  \nAdds a small performance overhead, but it is negligible.",
+            "default": true
+        }
+    }
+}
