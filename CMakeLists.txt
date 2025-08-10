@@ -21,9 +21,15 @@ if(PROJECT_IS_TOP_LEVEL)
     target_compile_definitions(${PROJECT_NAME} PRIVATE IMAGE_PLUS_EXPORTING)
 endif()
 
-if(NOT DEFINED $ENV{GITHUB_ACTIONS})
+if(DEFINED ENV{GITHUB_ACTIONS})
+    set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    if (WIN32)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-incremental:no")
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-incremental:no")
+    endif()
+else()
     message(STATUS "Including tests")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE INCLUDE_TESTS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE IMAGEPLUS_INCLUDE_TESTS)
 endif()
 
 # For file formats
@@ -77,17 +83,26 @@ CPMAddPackage(
     OPTIONS
         "JPEGXL_ENABLE_TOOLS OFF"
         "JPEGXL_ENABLE_DOXYGEN OFF"
+        "JPEGXL_ENABLE_FUZZERS OFF"
         "JPEGXL_ENABLE_MANPAGES OFF"
         "JPEGXL_ENABLE_BENCHMARK OFF"
+        "JPEGXL_ENABLE_COVERAGE OFF"
         "JPEGXL_ENABLE_EXAMPLES OFF"
+        "JPEGXL_ENABLE_OPENEXR OFF"
+        "JPEGXL_ENABLE_JPEGLI OFF"
+        "JPEGXL_ENABLE_JPEGLI_LIBJPEG OFF"
+        "JPEGXL_BUNDLE_LIBPNG OFF"
+        "JPEGXL_ENABLE_SJPEG OFF"
         "JPEGXL_ENABLE_JNI OFF"
+        "BROTLI_BUNDLED_MODE ON"
+        "BUILD_TESTING OFF"
         "BUILD_SHARED_LIBS OFF"
 )
 target_compile_definitions(jxl PUBLIC JXL_STATIC_DEFINE)
 target_link_libraries(${PROJECT_NAME} jxl jxl_threads)
 
 # giflib
-CPMAddPackage("gh:prevter/giflib#c8f34ad")
+CPMAddPackage("gh:prevter/giflib#29fbe2b")
 file(GLOB_RECURSE GIFLIB_SOURCES CONFIGURE_DEPENDS ${giflib_SOURCE_DIR}/lib/*.c)
 add_library(giflib STATIC ${GIFLIB_SOURCES})
 target_include_directories(giflib PUBLIC ${giflib_SOURCE_DIR}/lib)

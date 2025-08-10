@@ -1,5 +1,9 @@
 #include <api.hpp>
 
+#ifdef GEODE_IS_ANDROID
+#include <arpa/inet.h> // for ntohl
+#endif
+
 IMAGE_PLUS_BEGIN_NAMESPACE
     namespace formats {
         template <size_t N>

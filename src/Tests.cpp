@@ -1,4 +1,4 @@
-#ifdef INCLUDE_TESTS
+#ifdef IMAGEPLUS_INCLUDE_TESTS
 
 #include <api.hpp>
 #include <Geode/modify/MenuLayer.hpp>
