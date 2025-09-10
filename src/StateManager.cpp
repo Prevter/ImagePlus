@@ -16,13 +16,13 @@ namespace imgp {
         for (size_t i = 1; i < animation->frames.size(); ++i) {
             auto& frame = animation->frames[i];
             auto texture = new cocos2d::CCTexture2D();
-            texture->autorelease();
             texture->initWithData(
                 frame.data.get(),
                 animation->hasAlpha ? cocos2d::kTexture2DPixelFormat_RGBA8888 : cocos2d::kTexture2DPixelFormat_RGB888,
                 animation->width, animation->height,
                 cocos2d::CCSize{ static_cast<float>(animation->width), static_cast<float>(animation->height) }
             );
+            texture->autorelease();
             texture->retain();
             m_frames.emplace_back(texture);
             m_delays.push_back(frame.delay);
