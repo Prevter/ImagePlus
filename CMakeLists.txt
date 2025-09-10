@@ -101,14 +101,8 @@ CPMAddPackage(
 target_compile_definitions(jxl PUBLIC JXL_STATIC_DEFINE)
 target_link_libraries(${PROJECT_NAME} jxl jxl_threads)
 
-# giflib
-CPMAddPackage("gh:prevter/giflib#29fbe2b")
-file(GLOB_RECURSE GIFLIB_SOURCES CONFIGURE_DEPENDS ${giflib_SOURCE_DIR}/lib/*.c)
-add_library(giflib STATIC ${GIFLIB_SOURCES})
-target_include_directories(giflib PUBLIC ${giflib_SOURCE_DIR}/lib)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(giflib PRIVATE -Wno-deprecated-declarations)
-endif()
-target_link_libraries(${PROJECT_NAME} giflib)
+# stb
+CPMAddPackage("gh:nothings/stb#fede005")
+target_include_directories(${PROJECT_NAME} PUBLIC ${stb_SOURCE_DIR})
 
 setup_geode_mod(${PROJECT_NAME})
