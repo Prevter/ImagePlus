@@ -5,6 +5,7 @@
 struct ImagePlusSprite : geode::Modify<ImagePlusSprite, cocos2d::CCSprite>{
     struct Fields {
         std::shared_ptr<imgp::Animation> animation = nullptr;
+        geode::Ref<cocos2d::CCTexture2D> firstFrame = nullptr;
 
         double frameTime = 0.0f; // time spent on the current frame
         float playbackSpeed = 1.0f; // speed of playback, 1.0 is normal speed (negative values are reversed)

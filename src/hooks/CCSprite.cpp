@@ -158,6 +158,7 @@ bool ImagePlusSprite::initWithTexture(CCTexture2D* texture, CCRect const& rect, 
 
     if (auto anim = imgp::StateManager::get().findTextureStorage(texture)) {
         auto fields = m_fields.self();
+        fields->firstFrame = texture;
         fields->animation = *anim;
         this->schedule(schedule_selector(ImagePlusSprite::animationUpdate));
     }
