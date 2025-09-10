@@ -118,7 +118,16 @@ class $modify(ImagePlusImageHook, CCImage) {
         }
 
         switch (static_cast<ImageFormat>(fmt)) {
-            case ImageFormat::Png: TRY_FROM_DECODE_RESULT(decode::png);
+            case ImageFormat::Png: {
+                static bool disablePng = (
+                    listenForSettingChanges<bool>("disable-png", [](bool val) { disablePng = val; }),
+                    getMod()->getSettingValue<bool>("disable-png")
+                );
+
+                if (disablePng) break;
+
+                TRY_FROM_DECODE_RESULT(decode::png);
+            }
             case ImageFormat::Qoi: TRY_FROM_DECODE_RESULT(decode::qoi);
             case ImageFormat::Webp: TRY_FROM_DECODE_RESULT(decode::webp);
             case ImageFormat::JpegXL: TRY_FROM_DECODE_RESULT(decode::jpegxl);

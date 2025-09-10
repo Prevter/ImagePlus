@@ -32,6 +32,12 @@
             "name": "Force Format Autodetect",
             "description": "Ignores the requested image format and always tries to autodetect it from the file.  \nAllows to use different image formats in texture packs and more.  \nAdds a small performance overhead, but it is negligible.",
             "default": true
+        },
+        "disable-png": {
+            "type": "bool",
+            "name": "Disable custom PNG loader",
+            "description": "Disables the custom PNG loader to prefer the cocos2d one instead.  \nUseful if you experience issues with some images.",
+            "default": false
         }
     }
 }
