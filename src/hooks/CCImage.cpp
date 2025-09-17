@@ -113,6 +113,11 @@ class $modify(ImagePlusImageHook, CCImage) {
             getMod()->getSettingValue<bool>("force-autodetect")
         );
 
+        // hi texture workshop <3
+        if (!data || size <= 0) {
+            return false;
+        }
+
         if (fmt == kFmtUnKnown || alwaysGuess) {
             fmt = +guessFormat(data, size);
         }
