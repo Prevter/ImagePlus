@@ -34,7 +34,7 @@ This mod uses the following libraries:
 
 - [libwebp](https://chromium.googlesource.com/webm/libwebp)
 - [qoi](https://github.com/phoboslab/qoi)
-- [giflib](https://github.com/mirrorer/giflib)
+- [stb_image](https://github.com/nothings/stb)
 - [spng](https://github.com/randy408/libspng)
 - [miniz](https://github.com/richgel999/miniz)
 - [libjxl](https://github.com/libjxl/libjxl)
