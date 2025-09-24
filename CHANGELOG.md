@@ -1,3 +1,6 @@
+# v1.0.3
+- Fixed incompatibility when using kFmtRawData format
+
 # v1.0.2
 - Fixed undefined behavior when calling `initWithImageData` with invalid data/size
 

@@ -118,7 +118,7 @@ class $modify(ImagePlusImageHook, CCImage) {
             return false;
         }
 
-        if (fmt == kFmtUnKnown || alwaysGuess) {
+        if (fmt != kFmtRawData && (fmt == kFmtUnKnown || alwaysGuess)) {
             fmt = +guessFormat(data, size);
         }
 
