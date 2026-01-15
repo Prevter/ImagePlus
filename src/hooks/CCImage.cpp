@@ -94,8 +94,10 @@ class $modify(ImagePlusImageHook, CCImage) {
         }
 
     bool initWithImageFile(char const* path, EImageFormat fmt) {
+        auto fullPath = CCFileUtils::get()->fullPathForFilename(path, false);
+
+#ifdef GEODE_IS_ANDROID
         unsigned long size = 0;
-        std::string fullPath = CCFileUtils::get()->fullPathForFilename(path, false);
         std::unique_ptr<uint8_t[]> data(
             CCFileUtils::get()->getFileData(fullPath.c_str(), "rb", &size)
         );
@@ -105,6 +107,15 @@ class $modify(ImagePlusImageHook, CCImage) {
         }
 
         return initWithImageData(data.get(), size, fmt, 0, 0, 8, 0);
+#else
+        auto res = file::readBinary(fullPath);
+        if (!res) {
+            return false;
+        }
+
+        auto& vec = res.unwrap();
+        return initWithImageData(vec.data(), static_cast<int>(vec.size()), fmt, 0, 0, 8, 0);
+#endif
     }
 
     bool initWithImageData(void* data, int size, EImageFormat fmt, int width, int height, int bpc, int whoKnows) {

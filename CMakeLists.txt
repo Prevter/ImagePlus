@@ -37,7 +37,7 @@ endif()
 CPMAddPackage(
     NAME libwebp
     GITHUB_REPOSITORY "webmproject/libwebp"
-    GIT_TAG "4bcea04"
+    GIT_TAG "4510224"
     OPTIONS
         "WEBP_BUILD_CWEBP OFF"
         "WEBP_BUILD_DWEBP OFF"
@@ -79,7 +79,7 @@ target_link_libraries(${PROJECT_NAME} spng)
 CPMAddPackage(
     NAME libjxl
     GITHUB_REPOSITORY "libjxl/libjxl"
-    GIT_TAG "v0.11.1"
+    GIT_TAG "53042ec"
     OPTIONS
         "JPEGXL_ENABLE_TOOLS OFF"
         "JPEGXL_ENABLE_DOXYGEN OFF"
