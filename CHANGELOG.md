@@ -1,3 +1,7 @@
+# v1.0.4
+- Updated libwebp and libjxl to latest versions
+- Improved performance of reading the file data on all platforms except Android
+
 # v1.0.3
 - Fixed incompatibility when using kFmtRawData format
 
