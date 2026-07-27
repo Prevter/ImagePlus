@@ -105,4 +105,8 @@ target_link_libraries(${PROJECT_NAME} jxl jxl_threads)
 CPMAddPackage("gh:nothings/stb#fede005")
 target_include_directories(${PROJECT_NAME} PUBLIC ${stb_SOURCE_DIR})
 
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} mfplat mfreadwrite mfuuid d3d11)
+endif ()
+
 setup_geode_mod(${PROJECT_NAME})

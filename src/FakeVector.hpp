@@ -18,12 +18,20 @@ public:
           end(static_cast<T*>(const_cast<void*>(start)) + size),
           endOfStorage(static_cast<T*>(const_cast<void*>(start)) + size) {}
 
-    std::vector<T>& asVector() {
+    std::vector<T>& asVector() & {
         return *reinterpret_cast<std::vector<T>*>(this);
     }
 
-    operator std::vector<T>&() {
+    std::vector<T>&& asVector() && {
+        return std::move(*reinterpret_cast<std::vector<T>*>(this));
+    }
+
+    operator std::vector<T>&() & {
         return asVector();
+    }
+
+    operator std::vector<T>&&() && {
+        return std::move(asVector());
     }
 };
 

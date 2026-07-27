@@ -237,6 +237,51 @@ IMAGE_PLUS_BEGIN_NAMESPACE
         size_t getFrameCount();
     };
 
+    class IMAGE_PLUS_DLL VideoNode : public cocos2d::CCSprite {
+    private:
+        struct Impl;
+        Impl* m_impl = nullptr;
+
+    public:
+        VideoNode();
+        ~VideoNode() override;
+
+        /// @brief Creates a new VideoNode
+        /// @param path Path to the video file
+        /// @return The created VideoNode, or nullptr if creation failed
+        static VideoNode* create(char const* path);
+
+        /// @brief Creates a new VideoNode from raw video data
+        /// @param data The raw video data
+        /// @return The created VideoNode, or nullptr if creation failed
+        static VideoNode* create(std::vector<uint8_t>&& data);
+
+        void draw() override;
+        void update(float delta) override;
+
+        void setPaused(bool paused);
+        bool isPaused() const;
+
+        void setPlaybackSpeed(float speed);
+        float getPlaybackSpeed() const;
+
+        void setLoop(bool loop);
+        bool isLooping() const;
+
+        double getDuration() const;
+        double getCurrentTime() const;
+
+        void seek(double time);
+
+        bool isMuted() const;
+        void setMuted(bool muted);
+
+    protected:
+        bool initFromFile(char const* path);
+        bool initFromData(std::vector<uint8_t>&& data);
+        bool init() override;
+    };
+
 IMAGE_PLUS_END_NAMESPACE
 
 #endif // IMAGE_PLUS_API_HPP
