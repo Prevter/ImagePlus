@@ -4,6 +4,7 @@
 
 #include <Geode/Result.hpp>
 #include <Geode/platform/cplatform.h>
+#include <Geode/utils/general.hpp>
 #include "types.hpp"
 
 #include <cstddef>
@@ -42,6 +43,11 @@ IMAGE_PLUS_BEGIN_NAMESPACE
         /// @param data Pointer to the buffer
         /// @param size Size of the buffer to avoid out-of-bounds reads
         bool IMAGE_PLUS_DLL isPng(void const* data, size_t size);
+
+        /// @brief Checks whether the data buffer contains valid CgBI magic (Apple's PNG variant)
+        /// @param data Pointer to the buffer
+        /// @param size Size of the buffer to avoid out-of-bounds reads
+        bool IMAGE_PLUS_DLL isCgBI(void const* data, size_t size);
 
         /// @brief Checks whether the data buffer contains valid GIF magic
         /// @param data Pointer to the buffer
@@ -99,6 +105,15 @@ IMAGE_PLUS_BEGIN_NAMESPACE
         /// @param size Size of the image data
         /// @return Result containing the decoded image or an error message
         geode::Result<DecodedImage> IMAGE_PLUS_DLL qoi(void const* data, size_t size);
+
+    #if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)\
+        /// @brief Decodes a CgBI image (Apple's PNG variant) and returns the decoded image data
+        /// @note User is responsible for freeing the image data
+        /// @param data Pointer to the image data
+        /// @param size Size of the image data
+        /// @return Result containing the decoded image or an error message
+        geode::Result<DecodedImage> IMAGE_PLUS_DLL cgbi(void const* data, size_t size);
+    #endif
 
         // == Animated Images == //
 

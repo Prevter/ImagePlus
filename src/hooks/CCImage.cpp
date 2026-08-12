@@ -48,7 +48,7 @@ class $modify(ImagePlusImageHook, CCImage) {
         m_pData = result.data.release(); // take ownership of the data
 
         // premultiply alpha if needed
-        if (m_bPreMulti) {
+        if (m_bPreMulti && !result.isPreMultiplied) {
             size_t imageSize = m_nWidth * m_nHeight * 4;
             size_t iters = imageSize / sizeof(uint32_t);
 
@@ -88,7 +88,7 @@ class $modify(ImagePlusImageHook, CCImage) {
     #define TRY_FROM_DECODE_RESULT(decodeFunc) { \
             auto result = decodeFunc(data, size); \
             if (result.isOk()) { \
-                return initFromDecodeResult(std::move(result).unwrap()); \
+                return this->initFromDecodeResult(std::move(result).unwrap()); \
             } else { log::warn("{}", result.unwrapErr()); } \
             break; \
         }
@@ -106,7 +106,7 @@ class $modify(ImagePlusImageHook, CCImage) {
             return false;
         }
 
-        return initWithImageData(data.get(), size, fmt, 0, 0, 8, 0);
+        return CCImage::initWithImageData(data.get(), size, fmt, 0, 0, 8, 0);
 #else
         auto res = file::readBinary(fullPath);
         if (!res) {
@@ -114,8 +114,17 @@ class $modify(ImagePlusImageHook, CCImage) {
         }
 
         auto& vec = res.unwrap();
-        return initWithImageData(vec.data(), static_cast<int>(vec.size()), fmt, 0, 0, 8, 0);
+        return CCImage::initWithImageData(vec.data(), static_cast<int>(vec.size()), fmt, 0, 0, 8, 0);
 #endif
+    }
+
+    static bool disablePngHandler() {
+        static bool disablePng = (
+            listenForSettingChanges<bool>("disable-png", [](bool val) { disablePng = val; }),
+            getMod()->getSettingValue<bool>("disable-png")
+        );
+
+        return disablePng;
     }
 
     bool initWithImageData(void* data, int size, EImageFormat fmt, int width, int height, int bpc, int whoKnows) {
@@ -129,25 +138,27 @@ class $modify(ImagePlusImageHook, CCImage) {
             return false;
         }
 
+        auto format = static_cast<ImageFormat>(fmt);
         if (fmt != kFmtRawData && (fmt == kFmtUnKnown || alwaysGuess)) {
-            fmt = +guessFormat(data, size);
+            format = guessFormat(data, size);
+            fmt = +format;
         }
 
-        switch (static_cast<ImageFormat>(fmt)) {
+        switch (format) {
             case ImageFormat::Png: {
-                static bool disablePng = (
-                    listenForSettingChanges<bool>("disable-png", [](bool val) { disablePng = val; }),
-                    getMod()->getSettingValue<bool>("disable-png")
-                );
-
-                if (disablePng) break;
-
+                if (disablePngHandler()) break;
                 TRY_FROM_DECODE_RESULT(decode::png);
             }
             case ImageFormat::Qoi: TRY_FROM_DECODE_RESULT(decode::qoi);
             case ImageFormat::Webp: TRY_FROM_DECODE_RESULT(decode::webp);
             case ImageFormat::JpegXL: TRY_FROM_DECODE_RESULT(decode::jpegxl);
             case ImageFormat::Gif: TRY_FROM_DECODE_RESULT(decode::gif);
+            case ImageFormat::CgBI: {
+                if (disablePngHandler()) break;
+                GEODE_IOS(TRY_FROM_DECODE_RESULT(decode::cgbi);)
+                log::warn("CgBI format is not supported on this platform");
+                break;
+            }
             // case ImageFormat::Avif: return initFromDecodeResult(decode::avif(data, size));
             // case ImageFormat::Heif: return initFromDecodeResult(decode::heif(data, size));
             // case ImageFormat::APng: return initFromDecodeResult(decode::apng(data, size));

@@ -105,4 +105,11 @@ target_link_libraries(${PROJECT_NAME} jxl jxl_threads)
 CPMAddPackage("gh:nothings/stb#fede005")
 target_include_directories(${PROJECT_NAME} PUBLIC ${stb_SOURCE_DIR})
 
+# cgbi
+if(APPLE)
+    enable_language(OBJCXX)
+    target_link_libraries(${PROJECT_NAME} "-framework ImageIO" "-framework CoreGraphics")
+    target_sources(${PROJECT_NAME} PRIVATE src/formats/cgbi.mm)
+endif()
+
 setup_geode_mod(${PROJECT_NAME})

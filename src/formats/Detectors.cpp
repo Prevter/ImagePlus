@@ -7,7 +7,7 @@
 IMAGE_PLUS_BEGIN_NAMESPACE
     namespace formats {
         template <size_t N>
-        constexpr bool matchMagic(void const* data, size_t size, std::array<uint8_t, N> const& magic, size_t offset = 0) {
+        static constexpr bool matchMagic(void const* data, size_t size, std::array<uint8_t, N> const& magic, size_t offset = 0) {
             return size >= offset + N && std::memcmp(static_cast<uint8_t const*>(data) + offset, magic.data(), N) == 0;
         }
 
@@ -54,6 +54,16 @@ IMAGE_PLUS_BEGIN_NAMESPACE
             return matchMagic(data, size, sig);
         }
 
+        static bool isCgBIChunk(void const* data, size_t size) {
+            constexpr std::array<uint8_t, 4> sig = {'C', 'g', 'B', 'I'};
+            return matchMagic(data, size, sig, 12);
+        }
+
+        bool isCgBI(void const* data, size_t size) {
+            if (!isPng(data, size)) return false;
+            return isCgBIChunk(data, size);
+        }
+
         bool isGif(void const* data, size_t size) {
             constexpr std::array<uint8_t, 4> sig = {'G', 'I', 'F', '8'};
             return matchMagic(data, size, sig);
@@ -89,7 +99,10 @@ IMAGE_PLUS_BEGIN_NAMESPACE
 
     ImageFormat guessFormat(void const* data, size_t size) {
         using namespace formats;
-        if (isPng(data, size)) return ImageFormat::Png;
+        if (isPng(data, size)) {
+            if (isCgBIChunk(data, size)) return ImageFormat::CgBI;
+            return ImageFormat::Png;
+        }
         if (isJpeg(data, size)) return ImageFormat::Jpg;
         if (isWebp(data, size)) return ImageFormat::Webp;
         if (isGif(data, size)) return ImageFormat::Gif;
@@ -113,6 +126,7 @@ IMAGE_PLUS_BEGIN_NAMESPACE
         }
 
         switch (format) {
+            GEODE_IOS(case ImageFormat::CgBI: FLATTEN_DECODED_IMAGE_RESULT(decode::cgbi);)
             case ImageFormat::Png: FLATTEN_DECODED_IMAGE_RESULT(decode::png);
             case ImageFormat::Qoi: FLATTEN_DECODED_IMAGE_RESULT(decode::qoi);
             case ImageFormat::Webp: return decode::webp(data, size);

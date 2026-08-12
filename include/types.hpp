@@ -24,12 +24,21 @@ namespace imgp {
         // extended
         Gif    = 6,
         Qoi    = 7,
-        JpegXL = 8
+        JpegXL = 8,
+        CgBI   = 9, ///< @note Only available on iOS
     };
 
     /// @brief Helper converter to turn imgp::ImageFormat into cocos2d enum
     constexpr cocos2d::CCImage::EImageFormat operator+(ImageFormat val) {
-        return static_cast<cocos2d::CCImage::EImageFormat>(val);
+        switch (val) {
+            case ImageFormat::Jpg: return cocos2d::CCImage::kFmtJpg;
+            case ImageFormat::Png: return cocos2d::CCImage::kFmtPng;
+            case ImageFormat::Tiff: return cocos2d::CCImage::kFmtTiff;
+            case ImageFormat::Webp: return cocos2d::CCImage::kFmtWebp;
+            case ImageFormat::RawData: return cocos2d::CCImage::kFmtRawData;
+            case ImageFormat::CgBI: return cocos2d::CCImage::kFmtPng;
+            default: return cocos2d::CCImage::kFmtUnKnown;
+        }
     }
 
     /// @brief Container for decoded image data
@@ -39,6 +48,7 @@ namespace imgp {
         uint16_t height = 0;
         uint8_t bit_depth = 8;
         bool hasAlpha = false;
+        bool isPreMultiplied = false; // used to skip manual premultiplication during load (e.g. for CgBI)
 
         operator bool() const { return data.get(); }
     };
@@ -70,6 +80,7 @@ namespace imgp {
             case ImageFormat::Gif:     return "gif";
             case ImageFormat::Qoi:     return "qoi";
             case ImageFormat::JpegXL:  return "jxl";
+            case ImageFormat::CgBI:    return "cgbi";
             default:                   return "unknown";
         }
     }
